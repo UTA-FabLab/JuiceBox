@@ -29,8 +29,6 @@ First you must connect all the components to the PI. The first would be the RFID
 |RST	|  22    |	GPIO25      |
 |3.3V	|  1     |	3V3         |
 
-Then connect the Button to the Raspberry pi. It is connected on pin 40
-
-Then connect the LED to pin 10
-
-Then connect the Relay to pin 3
+Then connect the Button to the Raspberry pi. It is connected on pin 40<br>
+Then connect the LED to pin 10 <br>
+Then connect the Relay to pin 3 <br>
