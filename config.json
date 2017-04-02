@@ -1,0 +1,9 @@
+{
+  "config_data":[
+
+	{
+	"device_num":"DEV_ID",
+	"server_url":"FLUD_BASE/flud.php"
+	}
+  ]
+}
