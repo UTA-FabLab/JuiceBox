@@ -37,6 +37,11 @@ This is the full build of the power-tail. From here it is just software in order
 ### Software:
 Assuming that you are starting from an older version of Rasbian( 2013 or older ), then you first need to enable SPI. To do that, type sudo raspi-config in order to enter the raspbian setup. Then go to advanced and enable SPI. Also you can change you Hostname from this screen.
 
+You also have to install the SPI-Py library, since the RFID library uses it.<br>
+https://github.com/lthiery/SPI-Py.git<br>
+clone the library shown above and install it using the command:<br>
+sudo python setup.py install (note: must be inside repo)<br>
+
 From here, all you have to do is pull the github repo from the fablab github.
 
 Before you can run the file:
