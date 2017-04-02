@@ -1,0 +1,9 @@
+{
+  "config_data":[
+
+	{
+	"device_num":"0005",
+	"server_url":"https://fabapp-dev.uta.edu/fablab/flud.php"
+	}
+  ]
+}
