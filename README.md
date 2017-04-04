@@ -8,8 +8,8 @@
 ### Usage:
 1. Place a user's RFID tag in front of the scanner.
 2. Press the button to scan tag, light will indicate scan status - 
-    If the scan was succesful, the LED will blink once.
-    If NOT -- The LED will blink multiple times and the sequence will reset.
+    <br>If the scan was succesful, the LED will blink once.
+    <br>If NOT -- The LED will blink multiple times and the sequence will reset.
 3. Place a staff member's RFID tag in front of the scanner and press the button
 4. If permissions are correct, JuiceBox will blink the LED once and then leave it on.
 5. If permissions are incorrect, JuiceBox will blink the LED multiple times and the sequence will reset
@@ -31,7 +31,7 @@ The MFRC22 reader we currently employ works via SPI interface, pinout scheme is 
 
 Connect the <b>Button switch</b> poles to <b>GPIO 40</b> and <b>Ground</b><br>
 
-Connect the <b>LED</b> to <b>pin 10</b> and <b>Ground</b> <br>
+Connect the <b>LED</b> to <b>GPIO 10</b> and <b>Ground</b> <br>
 
 Connect the Relay to <b>GPIO 3</b> and <b>Ground</b> <br>
 
@@ -77,8 +77,8 @@ In addition to starting a JuiceBox instance, the "on_boot" does the following:
 
 Notes:
   - The URL and Device ID are in ~/config.json
-  - If you plan on using the keyswipe powertail, you must clone a different branch add -b magnetic_sw to the git clone command
-  - for magnetic stripe, you MUST use bashrc to boot the script
+  - If you plan on using a magswipe to authenticate users, you must clone a different branch:<br>	add -b magnetic_sw to the git clone command
+  - For magswipe to work, you currently MUST use bashrc to boot the script
   - You can use cron to automate the JuiceBox instead of the .bashrc.
 
 
