@@ -33,7 +33,7 @@ Connect the <b>Button switch</b> poles to <b>GPIO 40</b> and <b>Ground</b><br>
 
 Connect the <b>LED</b> to <b>pin 10</b> and <b>Ground</b> <br>
 
-Connect the Relay to <b>GPIO 3</b> <br>
+Connect the Relay to <b>GPIO 3</b> and <b>Ground</b> <br>
 
 <br><br>
 ### Software:
@@ -67,8 +67,8 @@ Assuming that you are starting from an older version of Rasbian( 2013 or older )
 
 To automatically start the JuiceBox instance at boot, use the "on_boot" script from the home directory. 
 
-		cd ~/
-		echo "sudo ./on_boot" >> ~/.bashrc
+	cd ~/
+	echo "sudo ./on_boot" >> ~/.bashrc
 		
 In addition to starting a JuiceBox instance, the "on_boot" does the following: 
 
