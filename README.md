@@ -33,42 +33,49 @@ Then connect the <b>Button</b> to the Raspberry pi. It is connected on <b>pin 40
 Then connect the <b>LED</b> to <b>pin 10</b> <br>
 Then connect the Relay to pin 3 <br>
 
-This is the full build of the power-tail. From here it is just software in order to complete it.<br>
+This is the full build of the power-tail. From here it is just software in order to complete it.<br><br>
 ### Software:
-Assuming that you are starting from an older version of Rasbian( 2013 or older ), then you first need to enable SPI. To do that, type sudo raspi-config in order to enter the raspbian setup. Then go to advanced and enable SPI. Also you can change you Hostname from this screen.
+Assuming that you are starting from an older version of Rasbian( 2013 or older ), then you first need to enable SPI. To do that, type <b>sudo raspi-config</b> in order to enter the raspbian setup. Then go to advanced and enable SPI. Also you can change the hostname from this screen. If you have multiple JuiceBox, it is important that all JuiceBoxes have their own unique hostname.
 
-You also have to install the SPI-Py library, since the RFID library uses it.<br>
-https://github.com/lthiery/SPI-Py.git<br>
-clone the library shown above and install it using the command:<br>
-sudo python setup.py install (note: must be inside repo)<br>
+1. You also have to install the SPI-Py library, since the RFID library uses it.vClone the library to your home directory and install it using the following commands:
+		
+		cd ~/
+		git clone https://github.com/lthiery/SPI-Py
+		cd ~/SPI-Py
+		sudo python setup.py install
+		
+2. Moving back to the home directory, clone the JuiceBox repo:
 
-From here, all you have to do is pull the github repo from the fablab github.
+		cd ~/
+		git clone https://github.com/UTA-FabLab/JuiceBox
+		
+3. Move "on_boot" and "config.json" from the JuiceBox folder to the home directory:
 
-Before you can run the file:
-- move to the directory that you just cloned, and copy the following files to the home 				 
-- directory:
-  - on_boot
-  - config.json
-
+		mv ~/Juicebox/on_boot ~/
+		mv ~/Juicebox/config.json ~/
 	
-You are good to start a powertail instance now. 
-In this directory, final.py is the python file that is what runs the power-tail process. In order to start 
-a powertail instance.
+4. Start the JuiceBox instance using: 
 
-If you want to run the powertail instance on_boot, all you need to do is run the on_boot script, the difference between this script and directly running the final.py is that on_boot does 2 more things. 
+		cd ~/JuiceBox
+		sudo python final.py
+		
+##Additional notes:
+
+To automatically start the JuiceBox instance at boot, use the "on_boot" script from the home directory. 
+
+		cd ~/
+		echo "sudo ./on_boot" >> ~/.bashrc
+		
+In addition to starting a JuiceBox instance, the "on_boot" does the following: 
 
 1. It will run the check_net.py script, allowing the device to display a flashing LED until it is connected to the network.
 2. It will also launch the watchdog script, allowing the process to restart if it fails.
-
-	
-In order to make it run on boot, you have a choice of the following:
-  - add sudo ~/on_boot to the .bashrc file in the home folder
-  - add it to the crontab script by typing sudo crontab -e and adding  sudo ~/on_boot
 
 Notes:
   - The URL and Device ID are in ~/config.json
   - If you plan on using the keyswipe powertail, you must clone a different branch add -b magnetic_sw to the git clone command
   - for magnetic stripe, you MUST use bashrc to boot the script
+  - You can use cron to automate the JuiceBox instead of the .bashrc.
 
 
 
