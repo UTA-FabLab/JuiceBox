@@ -1,23 +1,23 @@
 # JuiceBox
 
 ### Goals:
-1. We want a device that can scan RFID tags, send the data to our server and decide whether to turn the machines on/off
-2. The device will have an RFID reader, MFRC522 to be exact.
-3. It controls the machines via a powertail ( Relay )
+1. A device to intake user credentials, authenticate against granted rights, and enable/disable usage based on those.
+2. Utilize RFID as a medium for user credentials.
+3. Control usage of the machines via controlling power to it. 
 
-### Intended Use:
-1. First we place the RFID tag infront of the scanner.
-2. we press the button, the device will now take in a scan and a light will indicate this.
-    * If the scan was succesful ( the server gave an appropriate response ), we can move on to the next step. The LED will indicate this.
-    * If NOT -- The LED will indicate an error and the process restarts.
-3. the device is now waiting for another RFID card to scan. ( It needs two RFIDs 1 for the user and 1 for the employee )
-4. If the scans are good and the server return an OK, the LED will come on and the relay will trigger the tool
-5. If the scans are bad and server return a NO, the LED will indicate and error and the process will restart
+### Usage:
+1. Place a user's RFID tag in front of the scanner.
+2. Press the button to scan tag, light will indicate scan status - 
+    If the scan was succesful, the LED will blink once.
+    If NOT -- The LED will blink multiple times and the sequence will reset.
+3. Place a staff member's RFID tag in front of the scanner and press the button
+4. If permissions are correct, JuiceBox will blink the LED once and then leave it on.
+5. If permissions are incorrect, JuiceBox will blink the LED multiple times and the sequence will reset
 
 ## Building a JuiceBox:
 
-First you must connect all the components to the PI. The first would be the RFID Reader. The connections are available on the Github for the library needed to use it. I have pasted the connections below:
-	
+The MFRC22 reader we currently employ works via SPI interface, pinout scheme is listed below:
+
 |Name | Pin #  | Pin name     |
 | --- | ------ | ------       |
 |SDA  |  24    |	GPIO8       |
@@ -29,22 +29,26 @@ First you must connect all the components to the PI. The first would be the RFID
 |RST	|  22    |	GPIO25      |
 |3.3V	|  1     |	3V3         |
 
-Then connect the <b>Button</b> to the Raspberry pi. It is connected on <b>pin 40</b><br>
-Then connect the <b>LED</b> to <b>pin 10</b> <br>
-Then connect the Relay to pin 3 <br>
+Connect the <b>Button switch</b> poles to <b>GPIO 40</b> and <b>Ground</b><br>
 
-This is the full build of the power-tail. From here it is just software in order to complete it.<br><br>
+Connect the <b>LED</b> to <b>pin 10</b> and <b>Ground</b> <br>
+
+Connect the Relay to <b>GPIO 3</b> <br>
+
+<br><br>
 ### Software:
-Assuming that you are starting from an older version of Rasbian( 2013 or older ), then you first need to enable SPI. To do that, type <b>sudo raspi-config</b> in order to enter the raspbian setup. Then go to advanced and enable SPI. Also you can change the hostname from this screen. If you have multiple JuiceBox, it is important that all JuiceBoxes have their own unique hostname.
+Assuming that you are starting from an older version of Rasbian( 2013 or older ):
+<br><br>
+1.	Enable SPI - type <b>sudo raspi-config</b> in order to enter the raspbian setup.  Go to Advanced and check Enable SPI. If desired, the hostname can be changed on this menu as well.  If you have multiple JuiceBox, it is crucia that all JuiceBoxes have their  unique hostnames.
 
-1. You also have to install the SPI-Py library, since the RFID library uses it.vClone the library to your home directory and install it using the following commands:
+2. Install the SPI-Py library.  vClone the library to your home directory and install it using the following commands:
 		
 		cd ~/
 		git clone https://github.com/lthiery/SPI-Py
 		cd ~/SPI-Py
 		sudo python setup.py install
 		
-2. Moving back to the home directory, clone the JuiceBox repo:
+2. Move back to the home directory and clone the JuiceBox repo:
 
 		cd ~/
 		git clone https://github.com/UTA-FabLab/JuiceBox
@@ -54,7 +58,7 @@ Assuming that you are starting from an older version of Rasbian( 2013 or older )
 		mv ~/Juicebox/on_boot ~/
 		mv ~/Juicebox/config.json ~/
 	
-4. Start the JuiceBox instance using: 
+4. Start a JuiceBox instance: 
 
 		cd ~/JuiceBox
 		sudo python final.py
