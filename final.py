@@ -54,17 +54,17 @@ def authorization(id_type, id_number, device_number):
 
 #		r = requests.post( url=serverURL, data=json.dumps({ "type":id_type, "number":id_number, "device":device_id }))
 #		response = r.json()
-	try:	
+	try:
 		data = json.dumps( {"type":id_type, "number":id_number, "device":device_number} )
 		req = urllib2.Request( serverURL, data )
 		print req
 		f = urllib2.urlopen( req )
 		print f
 		response = f.read()
-		
+
 		print "authorization: "
-		print response		
-		
+		print response
+
 	except Exception:
 		response = "failed to request authorization from server, make sure the connection and url are correct"
 
@@ -73,7 +73,7 @@ def authorization(id_type, id_number, device_number):
 
 
 def check_status( type,  id ):
-	
+
 	global serverURL
 
 	try:
@@ -84,10 +84,10 @@ def check_status( type,  id ):
 		f = urllib2.urlopen( req )
 		print "checking status"
 		response = f.read()
-		print response		
+		print response
 
 	except Exception:
-		response = "failed to request ID status from server, make sure the connection and url are accurate"		
+		response = "failed to request ID status from server, make sure the connection and url are accurate"
 
 	return response
 
@@ -106,8 +106,8 @@ def authorization_double(id_type, id_number, id_number_2, device_number):
 		f = urllib2.urlopen( req )
 		response = f.read()
 		print response
-		f.close()		
-	
+		f.close()
+
 	except Exception:
 		response = "failed to request authorization of 2 different IDs from server.... check connection and url"
 
@@ -130,8 +130,8 @@ def end_trans( type, trans_id, trans_end ):
 
 def end_trans( number ):
 	global serverURL
-	
-	data = json.dumps( { "type":"end_transaction", "trans_id":trans_id } )	
+
+	data = json.dumps( { "type":"end_transaction", "trans_id":trans_id } )
 
 	try:
 		req = urllib2.Request( serverURL, data )
@@ -155,7 +155,7 @@ def heart_beat():
 	GPIO.output( pin_led_ring, True )
 	time.sleep(0.25)
 	GPIO.output( pin_led_ring, False )
-	
+
 
 
 # this is from the MFC library, it is to ensure safe exit
@@ -180,7 +180,7 @@ trans_id = "";
 go = True
 
 # MAIN FUNCTION
-# while loop waiting for button press then read rfid then 
+# while loop waiting for button press then read rfid then
 while continue_reading:
 	go = True
 	GPIO.wait_for_edge( pin_button, GPIO.FALLING )
@@ -198,34 +198,34 @@ while continue_reading:
 
 		try:
 			role_json = json.loads( str( role_info ) )
-			print role_json[u'role']		
-	
+			print role_json[u'role']
+
 		except Exception:
 			print "error parsing the json of the first id"
 			go = False
-	
-		
-		
+
+
+
 		while go == True:
 			time.sleep(2)
 			(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 		    	(status,uid) = MIFAREReader.MFRC522_Anticoll()
-		
+
 			if status == MIFAREReader.MI_OK:
 				heart_beat()
 				temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
 				rid_2 = temp_rid
 				role_info_2 = str( check_status("check_status_rfid", rid_2) )
 				print role_info_2
-				try:	
+				try:
 					role_2_json = json.loads( role_info_2 )
 					print role_2_json[u'role']
 				except Exception:
 					print "error parsing the json of the second id";
 					break
-				
+
 				# we have both rid, now all we have to do is sen to the server to decide.
-				json_obj = json.loads( authorization_double( "rfid_double", rid_1, rid_2, device_id ))		
+				json_obj = json.loads( authorization_double( "rfid_double", rid_1, rid_2, device_id ))
 				print "\n"
 				print json_obj
 				print "\n"
