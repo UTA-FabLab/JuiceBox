@@ -29,4 +29,4 @@ python /home/pi/check_net.py
 
 
 
-sudo python /home/clone/JuiceBox/final.py
+sudo python /home/JuiceBox/final.py
