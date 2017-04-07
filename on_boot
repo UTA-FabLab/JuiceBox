@@ -2,7 +2,7 @@
 source /home/pi/.token
 
 # must first check if there is internet connection
-python /home/pi/check_net.py
+python /home/JuiceBox/check_net.py
 
 
 #cd /home/pi/clone
