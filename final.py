@@ -164,6 +164,7 @@ def end_read(signal,frame):
     global continue_reading
     print("Ctrl+C captured, ending read.")
     continue_reading = False
+    quit()
     GPIO.cleanup()
 
 
@@ -181,67 +182,73 @@ go = True
 
 # MAIN FUNCTION
 # while loop waiting for button press then read rfid then
+
+# logic:
+#	Read the first RFID card when the button is pressed.
+#	send the request to get the role of first RFID and print
+#	
+
+# main loop with interrupts....
+
+GPIO.add_event_detect( pin_button, GPIO.FALLING )
+
 while continue_reading:
 	go = True
-	GPIO.wait_for_edge( pin_button, GPIO.FALLING )
+	if( GPIO.event_detected( pin_button ) ):
 
-	(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-    	(status,uid) = MIFAREReader.MFRC522_Anticoll()
+		(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+	    	(status,uid) = MIFAREReader.MFRC522_Anticoll()
+		if status == MIFAREReader.MI_OK:
+			heart_beat()
+			temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
 
-	if status == MIFAREReader.MI_OK:
-		heart_beat()
-		temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
+			role_info = str(check_status("check_status_rfid", temp_rid))
+			rid_1 = temp_rid
+			print role_info
 
-		role_info = str(check_status("check_status_rfid", temp_rid))
-		rid_1 = temp_rid
-		print role_info
+			try:
+				role_json = json.loads( str(role_info) )
+				print role_json[u'role']
+			except Exception:
+				print "error parsing the JSON of the first ID"
+				go = False
 
-		try:
-			role_json = json.loads( str( role_info ) )
-			print role_json[u'role']
-
-		except Exception:
-			print "error parsing the json of the first id"
-			go = False
-
-
-
-		while go == True:
-			time.sleep(2)
-			(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-		    	(status,uid) = MIFAREReader.MFRC522_Anticoll()
-
-			if status == MIFAREReader.MI_OK:
-				heart_beat()
-				temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
-				rid_2 = temp_rid
-				role_info_2 = str( check_status("check_status_rfid", rid_2) )
-				print role_info_2
-				try:
-					role_2_json = json.loads( role_info_2 )
-					print role_2_json[u'role']
-				except Exception:
-					print "error parsing the json of the second id";
-					break
-
-				# we have both rid, now all we have to do is sen to the server to decide.
-				json_obj = json.loads( authorization_double( "rfid_double", rid_1, rid_2, device_id ))
-				print "\n"
-				print json_obj
-				print "\n"
-				try:
-					if json_obj[u'authorized'] == "Y":
-						GPIO.output( pin_connect, True )
-						GPIO.output( pin_led_ring, True )
-						trans_id = json_obj[u'trans_id']
-						time.sleep(0.5)
-						GPIO.wait_for_edge( pin_button, GPIO.FALLING )
-						end_trans( trans_id )
-						GPIO.output( pin_connect, False )
-						GPIO.output( pin_led_ring, False )
+			while go == True:
+				time.sleep(2)
+				(status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+			    	(status,uid) = MIFAREReader.MFRC522_Anticoll()
+				if status == MIFAREReader.MI_OK:
+					heart_beat()
+					temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
+					rid_2 = temp_rid
+					role_info_2 = str( check_status("check_status_rfid", rid_2 ))
+					print role_info_2
+					#try:
+					#	role_2_json = json.loads( role_info_2 )
+					#	print role_2_json[u'role']
+					#except Exception:
+					#	print "error parsing the json of the second id";
+					#	break
+	
+					# we have both rid, now all we have to do is sen to the server to decide.
+					json_obj = json.loads( authorization_double( "rfid_double", rid_1, rid_2, device_id ))
+					print "\n"
+					print json_obj
+					print "\n"
+					try:
+						if json_obj[u'authorized'] == "Y":
+							GPIO.output( pin_connect, True )
+							GPIO.output( pin_led_ring, True )
+							trans_id = json_obj[u'trans_id']
+							time.sleep(0.5)
+							GPIO.wait_for_edge( pin_button, GPIO.FALLING )
+							end_trans( trans_id )
+							GPIO.output( pin_connect, False )
+							GPIO.output( pin_led_ring, False )
+							break
+						else:
+							heart_beat()
+							break
+					except Exception:
+						print "error parsing json of the authorization ... check to make sure the server is returning json."
 						break
-					else:
-						heart_beat()
-						break
-				except Exception:
-					print "error parsing json of the authorization ... check to make sure the server is returning json."
