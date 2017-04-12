@@ -1,5 +1,5 @@
 #!/bin/bash
-#source /home/pi/.token
+source /home/pi/.token
 
 # must first check if there is internet connection
 
