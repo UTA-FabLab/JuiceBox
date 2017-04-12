@@ -6,17 +6,16 @@
 
 
 if [ -e "/home/pi/JuiceBox/.git" ]; then
+	echo "pulling latest updates from github"
 	cd /home/pi/JuiceBox
-#	git pull https://$TOKEN_TEMP@github.com/UTA-FabLab/power_tails
-	git pull https://github.com/UTA-FabLab/JuiceBox
+	git pull
 else
 	cd /home/pi/
 	echo "no JuiceBox folder"
-#	git clone https://$TOKEN_TEMP@github.com/UTA-FabLab/power_tails
 	git clone -b dev https://github.com/UTA-FabLab/JuiceBox
 fi
 
 
 chmod +x /home/pi/JuiceBox/JuiceBox_watchdog
 
-./home/pi/JuiceBox/JuiceBox_watchdog
+/home/pi/JuiceBox/JuiceBox_watchdog
