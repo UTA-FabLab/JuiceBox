@@ -1,6 +1,0 @@
-!#/bin/bash
-
-cd /home/pi/powertails
-echo "changed to power tails"
-sudo python final.py
-echo "closing powertails"
