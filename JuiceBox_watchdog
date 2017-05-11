@@ -4,7 +4,7 @@ cd /home/pi/JuiceBox
 echo "changed to JuiceBox"
 
 while true; do
-	if ! pgrep -x "python" > /dev/null
+	if pgrep -x "python" > /dev/null
 	then
 		echo "working"
 	else
