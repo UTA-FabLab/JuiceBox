@@ -12,6 +12,11 @@ import time
 import pprint
 import urllib, urllib2
 import os
+import ssl
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
 
 
 pin_button = 40
@@ -43,6 +48,7 @@ with open("/home/pi/config.json") as json_file:
     device_id = json_data[u'config_data'][0][u'device_num']
     serverURL = json_data[u'config_data'][0][u'server_url']
 
+serverURL = "FLUD_BASE/juicebox.php"
 
 
 
@@ -58,7 +64,7 @@ def authorization(id_type, id_number, device_number):
 		data = json.dumps( {"type":id_type, "number":id_number, "device":device_number} )
 		req = urllib2.Request( serverURL, data )
 		print req
-		f = urllib2.urlopen( req )
+		f = urllib2.urlopen( req, context=ctx )
 		print f
 		response = f.read()
 
@@ -81,7 +87,7 @@ def check_status( type,  id ):
 #		response = r.json()
 		data = json.dumps( { "type":type, "number":id } )
 		req = urllib2.Request( serverURL, data )
-		f = urllib2.urlopen( req )
+		f = urllib2.urlopen( req, context=ctx )
 		print "checking status"
 		response = f.read()
 		print response
@@ -103,7 +109,7 @@ def authorization_double(id_type, id_number, id_number_2, device_number):
 	try:
 		data=json.dumps({ "type":id_type, "number":id_number, "number_employee":id_number_2, "device":device_id })
 		req = urllib2.Request( serverURL, data )
-		f = urllib2.urlopen( req )
+		f = urllib2.urlopen( req, context=ctx )
 		response = f.read()
 		print response
 		f.close()
@@ -135,7 +141,7 @@ def end_trans( number ):
 
 	try:
 		req = urllib2.Request( serverURL, data )
-		f = urllib2.urlopen( req )
+		f = urllib2.urlopen( req, context=ctx )
 		response = f.read()
 		print response
 		f.close()
