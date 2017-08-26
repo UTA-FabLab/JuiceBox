@@ -48,18 +48,12 @@ with open("/home/pi/config.json") as json_file:
     device_id = json_data[u'config_data'][0][u'device_num']
     serverURL = json_data[u'config_data'][0][u'server_url']
 
-serverURL = "FLUD_BASE/juicebox.php"
-
-
-
 # this is the method that will post data to flud.php, or global serverURL
 def authorization(id_type, id_number, device_number):
 
 	global serverURL
 	global device_id
 
-#		r = requests.post( url=serverURL, data=json.dumps({ "type":id_type, "number":id_number, "device":device_id }))
-#		response = r.json()
 	try:
 		data = json.dumps( {"type":id_type, "number":id_number, "device":device_number} )
 		req = urllib2.Request( serverURL, data )
@@ -83,8 +77,6 @@ def check_status( type,  id ):
 	global serverURL
 
 	try:
-#		r = requests.post( url=serverURL, data=json.dumps({ "type":type, "number":id }))
-#		response = r.json()
 		data = json.dumps( { "type":type, "number":id } )
 		req = urllib2.Request( serverURL, data )
 		f = urllib2.urlopen( req, context=ctx )
@@ -102,9 +94,6 @@ def authorization_double(id_type, id_number, id_number_2, device_number):
 
 	global serverURL
 	global device_id
-
-#		r = requests.post( url=serverURL, data=json.dumps({ "type":id_type, "number":id_number, "number_employee":id_number_2, "device":device_id }))
-#		response = r.json()
 
 	try:
 		data=json.dumps({ "type":id_type, "number":id_number, "number_employee":id_number_2, "device":device_id })
