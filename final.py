@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# testing new pull
-
 import json
-import os
+# import os
 import signal
-import ssl
 import time
-import urllib2
+# from pprint import pprint
+
+import RPi.GPIO as GPIO
+import requests
 
 import MFRC522
-import RPi.GPIO as GPIO
-
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
 
 pin_button = 40
 pin_green = 7
@@ -23,76 +18,55 @@ pin_red = 8
 pin_connect = 3
 pin_led_ring = 10
 
+device_id = "DEV_ID"
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(pin_connect, GPIO.OUT)
+serverURL = "FLUD_BASE/juicebox.php"
 GPIO.output(pin_connect, False)
 GPIO.setup(pin_led_ring, GPIO.OUT)
 
-file_exists = False
+headers = {'authorization': "FLUD_KEY"}
 
-while file_exists == False:
-    if os.path.exists("/home/pi/config.json"):
-        file_exists = True
-    else:
-        print "no files"
+## TODO: Read from a config file
+# file_exists = False
 
-with open("/home/pi/config.json") as json_file:
-    json_data = json.load(json_file)
-    device_id = json_data[u'config_data'][0][u'device_num']
-    serverURL = json_data[u'config_data'][0][u'server_url']
+#while file_exists == False:
+#      if os.path.exists("/home/pi/JuiceBox/config.json"):
+#              file_exists = True
+#      else:
+#              print "Missing Config"
 
+#with open("/home/pi/JuiceBox/config.json") as json_file:
+#      json_data = json.dumps(json.load(json_file))
+#      pprint(json_data)
+#      device_id = json_data[0]['config_data'][0]['device_num']
+#      serverURL = json_data[u'config_data'][0][u'server_url']
+#      print device_id, "at", serverURL
 
 # this is the method that will post data to flud.php, or global serverURL
-def authorization(id_type, id_number, device_number):
-    global serverURL
-    global device_id
-
-    try:
-        data = json.dumps({"type": id_type, "number": id_number, "device": device_number})
-        req = urllib2.Request(serverURL, data)
-        print req
-        f = urllib2.urlopen(req, context=ctx)
-        print f
-        response = f.read()
-
-        print "authorization: "
-        print response
-
-    except Exception:
-        response = "failed to request authorization from server, make sure the connection and url are correct"
-
-    return response
-
 
 def check_status(type, id):
-    global serverURL
-
     try:
-        data = json.dumps({"type": type, "number": id})
-        req = urllib2.Request(serverURL, data)
-        f = urllib2.urlopen(req, context=ctx)
-        print "checking status"
-        response = f.read()
+        print "Checking Status..."
+        payload = {"type": type, "number": id}
+        r = requests.request("POST", serverURL, json=payload, headers=headers)
+        response = r.json()
         print response
+        r.raise_for_status()
 
-    except Exception:
-        response = "failed to request ID status from server, make sure the connection and url are accurate"
+    except Exception :
+        response = "Check Status: Unable to connect. Verify connection."
 
     return response
 
 
-def authorization_double(id_type, id_number, id_number_2, device_number):
-    global serverURL
-    global device_id
-
+def authorization_double(id_type, id_number, id_number_2, device_id):
     try:
-        data = json.dumps({"type": id_type, "number": id_number, "number_employee": id_number_2, "device": device_id})
-        req = urllib2.Request(serverURL, data)
-        f = urllib2.urlopen(req, context=ctx)
-        response = f.read()
+        payload = {"type": id_type, "number": id_number, "number_employee": id_number_2, "device": device_id}
+        r = requests.request("POST", serverURL, json=payload, headers=headers)
+        response = r.json()
         print response
-        f.close()
 
     except Exception:
         response = "failed to request authorization of 2 different IDs from server.... check connection and url"
@@ -100,18 +74,13 @@ def authorization_double(id_type, id_number, id_number_2, device_number):
     return response
 
 
-# this is the method that will send the poweroff notification to flud.php
 def end_trans(number):
-    global serverURL
-
-    data = json.dumps({"type": "end_transaction", "trans_id": trans_id})
-
+    payload = {"type": "end_transaction", "trans_id": trans_id}
     try:
-        req = urllib2.Request(serverURL, data)
-        f = urllib2.urlopen(req, context=ctx)
-        response = f.read()
+        r = requests.request("POST", serverURL, json=payload, headers=headers)
+        response = r.json()
         print response
-        f.close()
+
     except Exception:
         response = "could not end transaction"
 
@@ -157,8 +126,9 @@ go = True
 # while loop waiting for button press then read rfid then
 
 # logic:
-#	Read the first RFID card when the button is pressed.
-#	send the request to get the role of first RFID and print
+#       Read the first RFID card when the button is pressed.
+#       send the request to get the role of first RFID and print
+#
 
 # main loop with interrupts....
 
@@ -166,7 +136,7 @@ GPIO.add_event_detect(pin_button, GPIO.FALLING)
 
 while continue_reading:
     go = True
-    if GPIO.event_detected(pin_button):
+    if (GPIO.event_detected(pin_button)):
 
         (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
         (status, uid) = MIFAREReader.MFRC522_Anticoll()
@@ -174,15 +144,15 @@ while continue_reading:
             heart_beat()
             temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
 
-            role_info = str(check_status("check_status_rfid", temp_rid))
+            role_info = check_status("check_status_rfid", temp_rid)
             rid_1 = temp_rid
             print role_info
 
             try:
-                role_json = json.loads(str(role_info))
-                print role_json[u'role']
+                role_json = json.loads(json.dumps(role_info))
+                print role_json["role"]
             except Exception:
-                print "error parsing the JSON of the first ID"
+                print "JSON: ID_1 parse failure"
                 go = False
 
             while go == True:
@@ -195,15 +165,7 @@ while continue_reading:
                     rid_2 = temp_rid
                     role_info_2 = str(check_status("check_status_rfid", rid_2))
                     print role_info_2
-                    # try:
-                    #	role_2_json = json.loads( role_info_2 )
-                    #	print role_2_json[u'role']
-                    # except Exception:
-                    #	print "error parsing the json of the second id";
-                    #	break
-
-                    # we have both rid, now all we have to do is sen to the server to decide.
-                    json_obj = json.loads(authorization_double("rfid_double", rid_1, rid_2, device_id))
+                    json_obj = authorization_double("rfid_double", rid_1, rid_2, device_id)
                     print "\n"
                     print json_obj
                     print "\n"
