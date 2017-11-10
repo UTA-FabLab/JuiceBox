@@ -16,18 +16,24 @@
 
 ## Building a JuiceBox:
 
-The MFRC22 reader we currently employ works via SPI interface, pinout scheme is listed below:
+The MFRC22 reader we currently employ works via SPI interface. Use the following pinout scheme to connect the RFID, button switch, status LED and relay :
 
-|Name | Pin #  | Pin name     |
-| --- | ------ | ------       |
-|SDA  |  24    |	GPIO8       |
-|SCK  |	23    |	GPIO11      |
-|MOSI	|  19	   |  GPIO10      |
-|MISO	|  21    |	GPIO9       |
-|IRQ	|  None	|  None        |
-|GND	|  Any   |	Any Ground  |
-|RST	|  22    |	GPIO25      |
-|3.3V	|  1     |	3V3         |
+|Device 	|Name	| Pin #	| Pin name	|
+|:---		| ---	| :----:| :------:	|
+|**MFRC22**	|SDA	|  24	|	GPIO 8	|
+|		|SCK	|  23	|	GPIO 11	|
+|		|MOSI	|  19	|	GPIO 10	|
+|		|MISO	|  21	|	GPIO 9	|
+|		|IRQ	|  None	|	None	|
+|		|GND	|  GND	|	Ground	|
+|		|RST	|  22	|	GPIO25	|
+|		|3.3V	|  1	|	3V3	|
+|**Button**	|COM	|  40	|	GPIO 21	|
+|		|NO	|  GND	|	Ground	|
+|**LED**	|+	|  10	|	GPIO 14	|
+|		|-	|  GND	|	Ground	|
+|**Relay**	|+	|  3	|	GPIO 2	|
+|		|-	|  GND	|	Ground	|
 
 Connect the <b>Button switch</b> poles to <b>GPIO 40</b> and <b>Ground</b><br>
 
