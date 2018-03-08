@@ -23,7 +23,7 @@ pin_button = 40
 pin_green = 7
 pin_red = 8
 pin_connect = 3
-pin_led_ring = 10
+pin_led_ring = 33
 
 
 
