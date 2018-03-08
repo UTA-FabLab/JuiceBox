@@ -30,7 +30,7 @@ The MFRC22 reader we currently employ works via SPI interface. Use the following
 |		|3.3V	|  1	|	3V3	|
 |**Button**	|COM	|  40	|	GPIO 21	|
 |		|NO	|  GND	|	Ground	|
-|**LED**	|+	|  10	|	GPIO 14	|
+|**LED**	|+	|  33	|	GPIO 13	|
 |		|-	|  GND	|	Ground	|
 |**Relay**	|+	|  3	|	GPIO 2	|
 |		|-	|  GND	|	Ground	|
