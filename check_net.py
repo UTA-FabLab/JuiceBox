@@ -3,7 +3,7 @@ import time
 import RPi.GPIO as GPIO
 
 url = "http://google.com"
-pin_led = 10
+pin_led = 33
 led_on = False
 blink_time = 1
 
