@@ -128,7 +128,7 @@ def main():
                     go = False
 
                 while go == True:
-                    time.sleep(2)
+                    time.sleep(1)
                     (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
                     (status, uid) = MIFAREReader.MFRC522_Anticoll()
                     if status == MIFAREReader.MI_OK:
@@ -159,6 +159,7 @@ def main():
                             print "error parsing json of the authorization ... check to make sure the server is returning json."
                             break
 
-
+        time.sleep(0.1)
+                            
 if __name__ == '__main__':
     main()
