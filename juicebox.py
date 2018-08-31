@@ -1,8 +1,10 @@
 #!/usr/bin/python2.7
 
+from __future__ import print_function
 import json
 import signal
 import time
+import sys
 
 import RPi.GPIO as GPIO
 import requests
@@ -28,15 +30,15 @@ headers = {'authorization': "FLUD_KEY"}
 
 def check_status(type, id):
     try:
-        print "Checking Status..."
         payload = {"type": type, "number": id}
         r = requests.request("POST", serverURL, json=payload, headers=headers)
         response = r.json()
-        print response
         r.raise_for_status()
+        print(response, file=sys.stderr)
 
     except Exception:
         response = "Check Status: Unable to connect. Verify connection."
+        print(response, file=sys.stderr)
 
     return response
 
@@ -46,23 +48,23 @@ def authorization_double(id_type, id_number, id_number_2, device_id):
         payload = {"type": id_type, "number": id_number, "number_employee": id_number_2, "device": device_id}
         r = requests.request("POST", serverURL, json=payload, headers=headers)
         response = r.json()
-        print response
 
     except Exception:
         response = "failed to request authorization of 2 different IDs from server.... check connection and url"
+        print(response, file=sys.stderr)
 
     return response
 
 
 def end_trans(number):
-    payload = {"type": "end_transaction", "trans_id": trans_id}
+    payload = {"type": "end_transaction", "dev_id": number}
     try:
         r = requests.request("POST", serverURL, json=payload, headers=headers)
         response = r.json()
-        print response
 
     except Exception:
         response = "could not end transaction"
+        print(response, file=sys.stderr)
 
     return response
 
@@ -85,7 +87,7 @@ continue_reading = True
 
 def end_read(signal, frame):
     global continue_reading
-    print("Ctrl+C captured, ending read.")
+    print("Ctrl+C captured, ending read.", file=sys.stderr)
     continue_reading = False
     quit()
     GPIO.cleanup()
@@ -115,32 +117,31 @@ def main():
             if status == MIFAREReader.MI_OK:
                 heart_beat()
                 temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
+                print("Operator RFID:", temp_rid, file=sys.stderr)
 
                 role_info = check_status("check_status_rfid", temp_rid)
                 rid_1 = temp_rid
-                print role_info
-
                 try:
                     role_json = json.loads(json.dumps(role_info))
-                    print role_json["role"]
+                    print("Operator Level:", role_json["role"], file=sys.stderr)
+
                 except Exception:
-                    print "JSON: ID_1 parse failure"
+                    print("JSON: ID_1 parse failure", file=sys.stderr)
                     go = False
 
                 while go == True:
-                    time.sleep(1)
                     (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
                     (status, uid) = MIFAREReader.MFRC522_Anticoll()
                     if status == MIFAREReader.MI_OK:
                         heart_beat()
                         temp_rid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
+                        print("Staff RFID:", temp_rid, file=sys.stderr)
                         rid_2 = temp_rid
-                        role_info_2 = str(check_status("check_status_rfid", rid_2))
-                        print role_info_2
+                        role_info_2 = check_status("check_status_rfid", rid_2)
+                        role_json_2 = json.loads(json.dumps(role_info_2))
+                        print("Staff Level:", role_json_2["role"], file=sys.stderr)
                         json_obj = authorization_double("rfid_double", rid_1, rid_2, device_id)
-                        print "\n"
-                        print json_obj
-                        print "\n"
+                        print("Status:",json_obj, file=sys.stderr)
                         try:
                             if json_obj[u'authorized'] == "Y":
                                 GPIO.output(pin_connect, True)
@@ -148,7 +149,8 @@ def main():
                                 trans_id = json_obj[u'trans_id']
                                 time.sleep(0.5)
                                 GPIO.wait_for_edge(pin_button, GPIO.FALLING)
-                                end_trans(trans_id)
+                                end_obj=end_trans(device_id)
+                                print("End Transaction:", end_obj, file=sys.stderr)
                                 GPIO.output(pin_connect, False)
                                 GPIO.output(pin_led_ring, False)
                                 break
@@ -156,10 +158,10 @@ def main():
                                 heart_beat()
                                 break
                         except Exception:
-                            print "error parsing json of the authorization ... check to make sure the server is returning json."
+                            print("Error parsing json of the authorization ... check to make sure the server is returning json.", file=sys.stderr)
                             break
 
         time.sleep(0.1)
-                            
+
 if __name__ == '__main__':
     main()
