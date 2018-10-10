@@ -1,15 +1,26 @@
 #!/usr/bin/python2.7
 
 from __future__ import print_function
+
+import httplib
 import json
+import logging
 import signal
-import time
 import sys
+import time
 
 import RPi.GPIO as GPIO
 import requests
 
 import MFRC522
+
+# Debug logging
+httplib.HTTPConnection.debuglevel = 1
+logging.basicConfig(format='%(asctime)s %(message)s')
+logging.getLogger().setLevel(logging.DEBUG)
+req_log = logging.getLogger('requests.packages.urllib3')
+req_log.setLevel(logging.DEBUG)
+req_log.propagate = True
 
 pin_button = 40
 pin_green = 7
@@ -24,6 +35,7 @@ GPIO.setup(pin_connect, GPIO.OUT)
 serverURL = "FLUD_BASE/juicebox.php"
 GPIO.output(pin_connect, False)
 GPIO.setup(pin_led_ring, GPIO.OUT)
+GPIO.output(pin_led_ring, False)
 
 headers = {'authorization': "FLUD_KEY"}
 
