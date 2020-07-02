@@ -41,7 +41,7 @@ headers = {'authorization': "FLUD_KEY"}
 
 
 class Juicebox:
-    #the constructor
+    #the constructor for the initialization
     def __init__(self):
         self.rid_1 = ""
         self.rid_2 = ""
@@ -51,9 +51,8 @@ class Juicebox:
         self.trans_id = ""
         self.go = False
 
-    def check_status(self, type, id):
+    def check_status_operator(self, type, id):
         
-       
         try:
             payload = {"type": type, "number": id}
             r = requests.request(
@@ -62,12 +61,39 @@ class Juicebox:
             r.raise_for_status()
             print(response, file=sys.stderr)
 
-        except Exception:
+        except Exception :
             response = "Check Status: Unable to connect. Verify connection."
-            print(response, file=sys.stderr)
-
+        
         return response
+    
+        try:
+            role_json = json.loads(json.dumps(role_info))
+            print("Operator Level:",
+                role_json["role"], file=sys.stderr)
+            
 
+        except Exception:
+            print("JSON: ID_1 parse failure", file=sys.stderr)
+    
+    def check_status_staff(self, type, id):
+            
+            try:
+                payload = {"type": type, "number": id}
+                r = requests.request(
+                    "POST", serverURL, json=payload, headers=headers)
+                response = r.json()
+                r.raise_for_status()
+                print(response, file=sys.stderr)
+
+            except Exception :
+                response = "Check Status: Unable to connect. Verify connection."
+                
+            return response
+            
+            role_json_2 = json.loads(json.dumps(role_info_2))
+            print("Staff Level:",
+                role_json_2["role"], file=sys.stderr)
+        
     def authorization_double(self, id_type, id_number, id_number_2, device_id):
         try:
             payload = {"type": id_type, "number": id_number,
@@ -75,35 +101,50 @@ class Juicebox:
             r = requests.request(
                 "POST", serverURL, json=payload, headers=headers)
             response = r.json()
-
-        except Exception:
-            response = "failed to request authorization of 2 different IDs from server.... check connection and url"
+        except ConnectionError as e:
+            response =e+": Improper pair of RFID values entered, or Unable to connect."
             print(response, file=sys.stderr)
+            self.heart_beat()
+            return response
+        except HTTPError as e:
+            response = e+ ": Request to HTTP server returned unsuccessful status code during RFID authorization phase."
+            print(response, file=sys.stderr)
+            self.heart_beat()
+            return response
+        except Exception as e:
+            response = e+": This exception in Juicebox.authorization_double() lacks error handling. Codebase is incomplete."
+            print(response, file=sys.stderr)
+            self.heart_beat()
+            return response
+        
 
         return response
+#end of Juicebox class
 
-    def end_trans(self, device_id):
+# new subclass for the GPIO pins
+
+class JuiceboxSubclass(Juicebox): 
+    
+    def end_trans(self,trans_number):
         GPIO.output(pin_connect, True)
         GPIO.output(pin_led_ring, True)
         time.sleep(0.5)
         GPIO.wait_for_edge(pin_button, GPIO.FALLING)
-        payload = {"type": "end_transaction", "dev_id": device_id}
+        payload = {"type": "end_transaction", "trans_id": trans_number}
+        
         try:
             r = requests.request(
                 "POST", serverURL, json=payload, headers=headers)
             response = r.json()
-
+            print(response)
         except Exception:
             response = "could not end transaction"
             print(response, file=sys.stderr)
-        else:
-            print("End Transaction:",end_obj, file=sys.stderr)
-        
+
         GPIO.output(pin_connect, False)
         GPIO.output(pin_led_ring, False)
-        
-        return response
-        
+        return response 
+       
     def heart_beat(self):
         global pin_led_ring
         time.sleep(0.5)
@@ -117,9 +158,9 @@ class Juicebox:
     
     def refresh(self):
         self.go = False
+#end of subclass
 
-#end of Juicebox class
-    # this is from the MFC library, it is to ensure safe exit
+# this is from the MFC library, it is to ensure safe exit
 continue_reading = True
 
 def end_read(signal, frame):
@@ -133,19 +174,12 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 MIFAREReader = MFRC522.MFRC522()
 
-'''temp_rid = ""
-rid_1 = ""
-rid_2 = ""
-role_1 = 0
-role_2 = 0
-trans_id = "";
-go = True
-'''
-
+#main function
 
 def main():
     GPIO.add_event_detect(pin_button, GPIO.FALLING)
     juicebox = Juicebox()
+    juiceboxsubclass = JuiceboxSubclass()
     while continue_reading:
         juicebox.go = False
         if (GPIO.event_detected(pin_button)):
@@ -154,63 +188,48 @@ def main():
                 MIFAREReader.PICC_REQIDL)
                 (status, uid) = MIFAREReader.MFRC522_Anticoll()
                 if status == MIFAREReader.MI_OK:
-                    juicebox.heart_beat()
+                    juiceboxsubclass.heart_beat()
                     juicebox.temp_rid = str(
                             uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
                     print("Operator RFID:", juicebox.temp_rid, file=sys.stderr)
                     rid_1 = juicebox.temp_rid
-                    role_info = juicebox.check_status(
+                    role_info = juicebox.check_status_operator(
                     "check_status_rfid", juicebox.temp_rid)
-                    
-                    
-
-                    
-                    try:
-                        role_json = json.loads(json.dumps(role_info))
-                        print("Operator Level:",
-                            role_json["role"], file=sys.stderr)
-                        juicebox.go = True
-
-                    except Exception:
-                        print("JSON: ID_1 parse failure", file=sys.stderr)
-                    
-
+                    juicebox.go = True
+                    #operator info is correct then check for staff
                 while juicebox.go == True:
                     (status, TagType) = MIFAREReader.MFRC522_Request(
                         MIFAREReader.PICC_REQIDL)
                     (status, uid) = MIFAREReader.MFRC522_Anticoll()
                     if status == MIFAREReader.MI_OK:
-                        juicebox.heart_beat()
+                        juiceboxsubclass.heart_beat()
                         juicebox.temp_rid = str(uid[0]) + str(uid[1]) + \
                             str(uid[2]) + str(uid[3])
                         print("Staff RFID:", juicebox.temp_rid, file=sys.stderr)
                         rid_2 = juicebox.temp_rid
-                        role_info_2 = juicebox.check_status(
+                        role_info_2 = juicebox.check_status_staff(
                             "check_status_rfid", rid_2)
-                        role_json_2 = json.loads(json.dumps(role_info_2))
-                        print("Staff Level:",
-                              role_json_2["role"], file=sys.stderr)
                         json_obj = juicebox.authorization_double(
                             "rfid_double", rid_1, rid_2, device_id)
                         print("Status:", json_obj, file=sys.stderr)
                         try:
                             if json_obj[u'authorized'] == "Y":
-                                GPIO.output(pin_connect, True)
-                                GPIO.output(pin_led_ring, True)
                                 trans_id = json_obj[u'trans_id']
                                 time.sleep(0.5)
-                                GPIO.wait_for_edge(pin_button, GPIO.FALLING)
-                                end_obj = juicebox.end_trans(device_id)
-                                juicebox.refresh()
+                                
+                                end_obj = juiceboxsubclass.end_trans(trans_id)
+                                print("End Transaction:",
+                                      end_obj, file=sys.stderr)
+                                juiceboxsubclass.refresh()
                                 break
                             else:
-                                juicebox.heart_beat()
-                                juicebox.refresh()
+                                juiceboxsubclass.heart_beat()
+                                juiceboxsubclass.refresh()
                                 break
                         except Exception:
                             print(
                                 "Error parsing json of the authorization ... check to make sure the server is returning json.", file=sys.stderr)
-                            juicebox.refresh()
+                            juiceboxsubclass.refresh()
                             break
         
                         
