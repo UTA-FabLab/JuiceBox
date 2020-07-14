@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 
 from __future__ import print_function
 from juicebox import *
@@ -7,7 +7,7 @@ from safe_exit import *
 import MFRC522
 
 # Debug logging
-httplib.HTTPConnection.debuglevel = 1
+http.client.HTTPConnection.debuglevel = 1
 logging.basicConfig(format='%(asctime)s %(message)s')
 logging.getLogger().setLevel(logging.DEBUG)
 req_log = logging.getLogger('requests.packages.urllib3')
@@ -33,7 +33,7 @@ def main():
                     gpioconnect.heart_beat()
                     juicebox.temp_rid = str(
                             uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
-                    print("Operator RFID:", juicebox.temp_rid, file=sys.stderr)
+                    print("Operator RFID:", juicebox.temp_rid, file=sys.stdout)
                     rid_1 = juicebox.temp_rid
                     role_info = juicebox.check_status_operator(
                     "check_status_rfid", juicebox.temp_rid)
@@ -70,8 +70,8 @@ def main():
                             "rfid_double", rid_1, rid_2, device_id)
                         print("Status:", json_obj, file=sys.stderr)
                         try:
-                            if json_obj[u'authorized'] == "Y":
-                                trans_id = json_obj[u'trans_id']
+                            if json_obj['authorized'] == "Y":
+                                trans_id = json_obj['trans_id']
                                 time.sleep(0.5)
                                 
                                 end_obj = gpioconnect.end_trans()

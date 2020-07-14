@@ -1,5 +1,5 @@
 from __future__ import print_function
-import httplib
+import http.client
 import json
 import logging
 import signal
@@ -7,7 +7,7 @@ import sys
 import time
 
 import requests
-import MFRC522
+import mfrc522
 
 device_id = "DEV_ID"
 serverURL = "FLUD_BASE/juicebox.php"

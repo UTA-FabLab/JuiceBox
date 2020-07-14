@@ -11,4 +11,4 @@ def end_read(signal, frame):
 
 
 signal.signal(signal.SIGINT, end_read)
-MIFAREReader = MFRC522.MFRC522()
+MIFAREReader = mfrc522.MFRC522()
