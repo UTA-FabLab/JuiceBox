@@ -1,12 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
 import RPi.GPIO as GPIO
-import spidev
+import spi
 import signal
 import time
 
-spi = spidev.SpiDev()
 class MFRC522:
     NRSTPD = 22
 
