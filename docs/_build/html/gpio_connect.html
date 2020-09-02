@@ -1,0 +1,299 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gpio_connect module &mdash; Surbhi  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="juicebox module" href="juicebox.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Surbhi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="juicebox.html">juicebox</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gpio_connect</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Surbhi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>gpio_connect module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gpio_connect.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-gpio_connect">
+<span id="gpio-connect-module"></span><h1>gpio_connect module<a class="headerlink" href="#module-gpio_connect" title="Permalink to this headline">¶</a></h1>
+<p>This program consist of the functions which are used in main.py file for operating the GPIO pins and ending the transaction when the operator presses the button on JuiceBox</p>
+<dl class="py class">
+<dt id="gpio_connect.ConnectgpioPins">
+<em class="property">class </em><code class="sig-prename descclassname">gpio_connect.</code><code class="sig-name descname">ConnectgpioPins</code><a class="headerlink" href="#gpio_connect.ConnectgpioPins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="juicebox.html#juicebox.Juicebox" title="juicebox.Juicebox"><code class="xref py py-class docutils literal notranslate"><span class="pre">juicebox.Juicebox</span></code></a></p>
+<p>This class is the subclass of Juicebox which contain the GPIO pins utility and ending transaction functionality</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rid_1: str</strong></dt><dd><p>RFID number of the operator</p>
+</dd>
+<dt><strong>rid_2: str</strong></dt><dd><p>RFID number of the staff member</p>
+</dd>
+<dt><strong>temp_rid: str</strong></dt><dd><p>temporary variable for storing the RFID number</p>
+</dd>
+<dt><strong>role_1: int</strong></dt><dd><p>assigned the default value of role_1 as 0</p>
+</dd>
+<dt><strong>role_2: int</strong></dt><dd><p>assigned the default value of role_2 as 0</p>
+</dd>
+<dt><strong>trans_id: str</strong></dt><dd><p>transaction id used for ending the transaction</p>
+</dd>
+<dt><strong>go: bool</strong></dt><dd><p>assigned the default value as False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">authorization_double</span></code>(id_type, id_number, …)</p></td>
+<td><p>This function checks whether the id type, id number and device id is correct</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_status_operator</span></code>(type, id)</p></td>
+<td><p>This function is used for checking the status of operator with its type and student/operator id number</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_status_staff</span></code>(type, id)</p></td>
+<td><p>This function is used for checking the status of staff member with its type and student/staff id number</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#gpio_connect.ConnectgpioPins.end_trans" title="gpio_connect.ConnectgpioPins.end_trans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_trans</span></code></a>()</p></td>
+<td><p>This function is used to end the transaction when the operator hits the JuiceBox button.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#gpio_connect.ConnectgpioPins.heart_beat" title="gpio_connect.ConnectgpioPins.heart_beat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heart_beat</span></code></a>()</p></td>
+<td><p>This function is used to show output on the JuiceBox device by blinking the LED ligths.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#gpio_connect.ConnectgpioPins.refresh" title="gpio_connect.ConnectgpioPins.refresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh</span></code></a>()</p></td>
+<td><p>This function is used to refresh the JuiceBox for the next time use</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="gpio_connect.ConnectgpioPins.end_trans">
+<code class="sig-name descname">end_trans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gpio_connect.ConnectgpioPins.end_trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to end the transaction when the operator hits the JuiceBox button. It ends the ticket that was initiated on the FabApp Dashboard</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: It prints the success message with ticket number that has been closed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gpio_connect.ConnectgpioPins.heart_beat">
+<code class="sig-name descname">heart_beat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gpio_connect.ConnectgpioPins.heart_beat" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to show output on the JuiceBox device by blinking the LED ligths. After the operator scans their tokens it is validated and if the information is correct it blinks once and solid red light is displayed. If the information is not correct it blinks multiple times and shuts down.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gpio_connect.ConnectgpioPins.refresh">
+<code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gpio_connect.ConnectgpioPins.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to refresh the JuiceBox for the next time use</p>
+</dd></dl>
+
+</dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-gpio_connect" title="gpio_connect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gpio_connect</span></code></a></p></td>
+<td><p>This program consist of the functions which are used in main.py file for operating the GPIO pins and ending the transaction when the operator presses the button on JuiceBox</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="juicebox.html" class="btn btn-neutral float-left" title="juicebox module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Surbhi
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
