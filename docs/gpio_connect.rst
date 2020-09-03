@@ -5,6 +5,3 @@ gpio\_connect module
    :members:
    :undoc-members:
    :show-inheritance:
-
-.. autosummary:: gpio_connect
-   :recursive:

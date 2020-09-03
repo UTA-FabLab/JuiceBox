@@ -5,6 +5,3 @@ juicebox module
    :members:
    :undoc-members:
    :show-inheritance:
-
-.. autosummary:: juicebox
-   :recursive:
