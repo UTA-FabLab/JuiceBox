@@ -64,16 +64,8 @@ Workflow:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Code documentation:
 
    juicebox <juicebox.rst>
    gpio_connect <gpio_connect.rst>
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
