@@ -11,3 +11,13 @@ JuiceBox.egg-info
 .idea
 JuiceBox-0.5-py2.7.egg
 JuiceBox-0.5-py3.5.egg
+build
+build/bdist.linux-armv7I
+build/lib/check_net.py
+build/lib/gpio_connect.py
+build/lib.linux-armv7l-2.7
+/JuiceBox.iml
+/misc.xml
+/modules.xml
+/vcs.xml
+/workspace.xml
