@@ -23,7 +23,7 @@ def main():
     juicebox = Juicebox()   #creating the object to use the functions of class Juicebox()
     gpioconnect = ConnectgpioPins() #creating the object to use the functions of ConnectgpioPins()
     while continue_reading:         #reading the MFC library
-        juicebox.go = False
+        juicebox.go
         if (GPIO.event_detected(pin_button)):
 #checking for the operator info
                 (status, TagType) = MIFAREReader.MFRC522_Request(
