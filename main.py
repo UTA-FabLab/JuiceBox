@@ -17,6 +17,9 @@ req_log.propagate = True
 # this is from the MFC library, it is to ensure safe exit
 continue_reading = True
 
+signal.signal(signal.SIGINT, end_read)
+MIFAREReader = mfrc522.MFRC522()
+
 #main function
 def main():
     GPIO.add_event_detect(pin_button, GPIO.FALLING) #to check whether button is pressed on the juicebox

@@ -8,7 +8,3 @@ def end_read(signal, frame):
     continue_reading = False
     quit()
     GPIO.cleanup()
-
-
-signal.signal(signal.SIGINT, end_read)
-MIFAREReader = mfrc522.MFRC522()
