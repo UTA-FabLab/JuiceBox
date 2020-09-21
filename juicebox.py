@@ -12,9 +12,9 @@ import time
 import mfrc522
 import requests
 
-device_id = "0049"
-serverURL = "https://fabapp-dev.uta.edu/api/juicebox.php"
-headers = {'authorization': "HDVmyqkZB5vsPQGAKwpLtPPQ8Pauy5DMVWsefcBVsbzv9AQnrJFhyAuqBhLCL9r8AFxtDAgjc7Qjf8bdL9eaAXd7VnejU7DHw"}
+device_id = "DEV_ID"                  
+serverURL = "FLUD_BASE/juicebox.php"
+headers = {'authorization': "FLUD_KEY"}
 
 
 class Juicebox:
