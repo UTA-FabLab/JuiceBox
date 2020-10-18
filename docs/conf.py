@@ -19,8 +19,9 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'JuiceBox'
-copyright = '2020, Surbhi'
-author = 'Surbhi'
+version = 'FabLab'
+copyright = '2020, Surbhi Zambad'
+author = 'Surbhi Zambad'
 
 
 # -- General configuration ---------------------------------------------------
