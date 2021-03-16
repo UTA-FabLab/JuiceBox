@@ -58,9 +58,10 @@ class ConnectgpioPins(Juicebox):
                 "POST", serverURL, json=payload, headers=headers)
             response = r.json()
             print(response)
-        except Exception:
+        except Exception as e:
             response = "could not end transaction"
             print(response, file=sys.stderr)
+            raise e
 
         GPIO.output(pin_connect, False)
         GPIO.output(pin_led_ring, False)
